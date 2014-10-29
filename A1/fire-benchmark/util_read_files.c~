@@ -111,3 +111,110 @@ int read_formatted(char *filename, int *nintci, int *nintcf, int *nextci,
 
     return 0;
 }
+
+
+/**
+ * Function to read binary file
+ * @param nintci, nintcf internal cells start and end index
+ * @param nextci, nextcf external cells start and end index.
+ * @param lcc link cell-to-cell array. Stores topology information
+ * @param bs, be, bn, bw, bl, bh, bp, su boundary coefficients for each volume cell
+ */
+int read_binary(char *filename, int *nintci, int *nintcf, int *nextci,
+        int *nextcf, int ***lcc, double **bs, double **be, double **bn,
+        double **bw, double **bl, double **bh, double **bp, double **su) 
+{
+    /* Open binary file read */
+    int i;
+    FILE *fp_bin = fopen( filename, "rb" );
+
+    if( fp_bin == NULL ){
+        printf( "Error while opening BINARY file %s \n", filename );
+    }
+    /*The type used taken from read_formatted- util_read_files.c */
+
+    fread( nintci, sizeof(int), 1, fp_bin );
+    fread( nintcf, sizeof(int), 1, fp_bin );
+    fread( nextci, sizeof(int), 1, fp_bin );
+    fread( nextcf, sizeof(int), 1, fp_bin );
+    if( ( *lcc = ( int** ) malloc( 6 * sizeof( int* ) ) ) == NULL ) {
+        printf( "Malloc failed to allocate first dimension of lcc (6)" );
+        return -1;
+    }
+
+
+    for( i = 0; i < 6; i++ ){
+        if( ( ( *lcc )[i] = ( int * ) malloc( ( *nintcf + 1 ) * sizeof( int ) ) ) == NULL ) {
+            printf( "Malloc(lcc) failed \n" );
+            return -1;
+        }
+    }
+
+    for( i = ( *nintci ); i <= *nintcf; i++ ) {
+        fread( &( *lcc )[0][i], sizeof( int ), 1, fp_bin );
+        fread( &( *lcc )[1][i], sizeof( int ), 1, fp_bin );
+        fread( &( *lcc )[2][i], sizeof( int ), 1, fp_bin );
+        fread( &( *lcc )[3][i], sizeof( int ), 1, fp_bin );
+        fread( &( *lcc )[4][i], sizeof( int ), 1, fp_bin );
+        fread( &( *lcc )[5][i], sizeof( int ), 1, fp_bin );
+    }
+
+    if( ( *bs = (double *) malloc((*nextcf + 1) * sizeof(double))) == NULL ) {
+        printf("Malloc() failed \n");
+        return -1;
+    }
+
+    if( ( *be = (double *) malloc((*nextcf + 1) * sizeof(double))) == NULL ) {
+        printf("Malloc() failed \n");
+        return -1;
+    }
+
+    if( ( *bn = (double *) malloc((*nextcf + 1) * sizeof(double))) == NULL ) {
+        printf("Malloc() failed \n");
+        return -1;
+    }
+
+    if( ( *bw = (double *) malloc((*nextcf + 1) * sizeof(double))) == NULL ) {
+        printf("Malloc() failed \n");
+        return -1;
+    }
+
+    if( ( *bl = (double *) malloc((*nextcf + 1) * sizeof(double))) == NULL ) {
+        printf("Malloc() failed \n");
+        return -1;
+    }
+
+    if( ( *bh = (double *) malloc((*nextcf + 1) * sizeof(double))) == NULL ) {
+        printf("Malloc() failed \n");
+        return -1;
+    }
+
+    if( ( *bp = (double *) malloc((*nextcf + 1) * sizeof(double))) == NULL ) {
+        printf("Malloc() failed \n");
+        return -1;
+    }
+
+    if( ( *su = (double *) malloc(( *nextcf + 1) * sizeof(double))) == NULL ) {
+        printf("Malloc() failed \n");
+        return -1;
+    }
+
+    for( i = ( *nintci ); i <= *nintcf; i++ ) {
+        fread( &( ( *bs )[i] ), sizeof( double ), 1, fp_bin );
+        fread( &( ( *be )[i] ), sizeof( double ), 1, fp_bin );
+        fread( &( ( *bn )[i] ), sizeof( double ), 1, fp_bin );
+        fread( &( ( *bw )[i] ), sizeof( double ), 1, fp_bin );
+        fread( &( ( *bl )[i] ), sizeof( double ), 1, fp_bin );
+        fread( &( ( *bh )[i] ), sizeof( double ), 1, fp_bin );
+        fread( &( ( *bp )[i] ), sizeof( double ), 1, fp_bin );
+        fread( &( ( *su )[i] ), sizeof( double ), 1, fp_bin );
+    }
+
+    
+    /* Closing BINARY File */
+    fclose( fp_bin );
+    printf( "\n" );
+    printf( "Read BINARY File successfully \n" );
+
+    return 0;
+}

@@ -127,7 +127,7 @@ int binconv(char *asciiFile, char *binFile)
 		return -1;
 	}
 
-	if ( (*BN = (double *) malloc((*nextcf + 1) * sizeof(double))) == NULL ){
+	if ( (*bn = (double *) malloc((*nextcf + 1) * sizeof(double))) == NULL ){
 		printf("Malloc() failed \n");
 		return -1;
 	}

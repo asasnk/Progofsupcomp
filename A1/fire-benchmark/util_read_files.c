@@ -120,15 +120,16 @@ int read_formatted(char *filename, int *nintci, int *nintcf, int *nextci,
  * @param lcc link cell-to-cell array. Stores topology information
  * @param bs, be, bn, bw, bl, bh, bp, su boundary coefficients for each volume cell
  */
- char 
-int read_binary(*filename, int *nintci, int *nintcf, int *nextci,
+int read_binary(char *filename, int *nintci, int *nintcf, int *nextci,
         int *nextcf, int ***lcc, double **bs, double **be, double **bn,
-        double **bw, double **bl, double **bh, double **bp, double **su) {
+        double **bw, double **bl, double **bh, double **bp, double **su) 
+{
     /* Open binary file read */
-    FILE *fp_bin = fopen( fileName, "rb" );
+    int i;
+    FILE *fp_bin = fopen( filename, "rb" );
 
     if( fp_bin == NULL ){
-        printf( "Error while opening BINARY file %s \n", fileName );
+        printf( "Error while opening BINARY file %s \n", filename );
     }
     /*The type used taken from read_formatted- util_read_files.c */
 
@@ -141,7 +142,7 @@ int read_binary(*filename, int *nintci, int *nintcf, int *nextci,
         return -1;
     }
 
-    int i;
+
     for( i = 0; i < 6; i++ ){
         if( ( ( *lcc )[i] = ( int * ) malloc( ( *nintcf + 1 ) * sizeof( int ) ) ) == NULL ) {
             printf( "Malloc(lcc) failed \n" );
@@ -158,43 +159,43 @@ int read_binary(*filename, int *nintci, int *nintcf, int *nextci,
         fread( &( *lcc )[5][i], sizeof( int ), 1, fp_bin );
     }
 
-    if( ( *bs = ( double * ) malloc( ( *nextcf + 1 ) * sizeof( double ) ) ) == NULL ) {
-        printf( "Malloc() failed \n" );
+    if( ( *bs = (double *) malloc((*nextcf + 1) * sizeof(double))) == NULL ) {
+        printf("Malloc() failed \n");
         return -1;
     }
 
-    if( ( *be = ( double * ) malloc( ( *nextcf + 1 ) * sizeof( double ) ) ) == NULL ) {
-        printf( "Malloc() failed \n" );
+    if( ( *be = (double *) malloc((*nextcf + 1) * sizeof(double))) == NULL ) {
+        printf("Malloc() failed \n");
         return -1;
     }
 
-    if( ( *bn = ( double * ) malloc( ( *nextcf + 1 ) * sizeof( double ) ) ) == NULL ) {
-        printf( "Malloc() failed \n" );
+    if( ( *bn = (double *) malloc((*nextcf + 1) * sizeof(double))) == NULL ) {
+        printf("Malloc() failed \n");
         return -1;
     }
 
-    if( ( *bw = ( double * ) malloc( ( *nextcf + 1 ) * sizeof( double ) ) ) == NULL ) {
-        printf( "Malloc() failed \n" );
+    if( ( *bw = (double *) malloc((*nextcf + 1) * sizeof(double))) == NULL ) {
+        printf("Malloc() failed \n");
         return -1;
     }
 
-    if( ( *bl = ( double * ) malloc( ( *nextcf + 1 ) * sizeof( double ) ) ) == NULL ) {
-        printf( "Malloc() failed \n" );
+    if( ( *bl = (double *) malloc((*nextcf + 1) * sizeof(double))) == NULL ) {
+        printf("Malloc() failed \n");
         return -1;
     }
 
-    if( ( *bh = ( double * ) malloc( ( *nextcf + 1 ) * sizeof( double ) ) ) == NULL ) {
-        printf( "Malloc() failed \n" );
+    if( ( *bh = (double *) malloc((*nextcf + 1) * sizeof(double))) == NULL ) {
+        printf("Malloc() failed \n");
         return -1;
     }
 
-    if( ( *bp = ( double * ) malloc( ( *nextcf + 1 ) * sizeof( double ) ) ) == NULL ) {
-        printf( "Malloc() failed \n" );
+    if( ( *bp = (double *) malloc((*nextcf + 1) * sizeof(double))) == NULL ) {
+        printf("Malloc() failed \n");
         return -1;
     }
 
-    if( ( *su = ( double * ) malloc( ( *nextcf + 1 ) * sizeof( double ) ) ) == NULL ) {
-        printf( "Malloc() failed \n" );
+    if( ( *su = (double *) malloc(( *nextcf + 1) * sizeof(double))) == NULL ) {
+        printf("Malloc() failed \n");
         return -1;
     }
 

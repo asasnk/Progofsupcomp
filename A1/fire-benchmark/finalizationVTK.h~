@@ -8,7 +8,7 @@
 #ifndef FINALIZATIONVTK_H_
 #define FINALIZATIONVTK_H_
 
-void finalizationVTK(char* file_out, int nintci, int nintcf, int** lcc, double* var, double* cgup, double* su);
+void finalizationVTK(char* file_in, int nintci, int nintcf, int** lcc, double* var, double* cgup, double* su);
 
 #endif /* FINALIZATION_H_ */
 

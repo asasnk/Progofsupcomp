@@ -4,15 +4,15 @@
 #                                                                  #
 ####################################################################
 
-CC = mpicc -cc=icc
-CFLAGS = -Wall -g -c99 $(PAPI_INC) 
-LIBS = -lm $(PAPI_LIB)
+CC = gcc # = mpicc -cc=cc
+CFLAGS = -Wall -g #-c99 #$(PAPI_INC) 
+LIBS = -lm #$(PAPI_LIB)
 
 LIBPOS=libpos.a
 AR = ar
 ARFLAGS = rv
 
-SRCS = initialization.c compute_solution.c finalization.c util_read_files.c util_write_files.c vol2mesh.c
+SRCS = initialization.c initializationBin.c compute_solution.c finalization.c finalizationVTK.c util_read_files.c util_write_files.c vol2mesh.c
 OBJS =  $(addsuffix .o, $(basename $(SRCS)))
 
 all: gccg 

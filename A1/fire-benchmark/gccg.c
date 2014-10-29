@@ -8,30 +8,23 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include "mpi.h"
+//#include "mpi.h"
 
 #include "initialization.h"
+#include "initializationBin.h"
 #include "compute_solution.h"
 #include "finalization.h"
+#include "finalizationVTK.h"
 
 #define NUMEVENT0 4
 #define NUMEVENT1 1
 
 // call error code here
 int main(int argc, char *argv[]) {
-    /* Check whether right number of arguments have been passed */
-    if( argc < 4) {
-        printf( "Use : %s <format> <input file> <output prefix> \n", argv[0]);
-        return EXIT_FAILURE ;
-    }
-    /* Check whether input is only text or binary */ 
-    if( strcmp( argv[1], "text" ) != 0 && strcmp( argv[1], "bin" ) != 0 ) {
-        printf( "<format> must be 'text' or 'bin' only\n" );
-        return EXIT_FAILURE;
-    }  
-     
+    
     int i;
-
+    int init_status;
+    
     const int max_iters = 10000;    /// maximum number of iteration to perform
 
     /** Simulation parameters parsed from the input datasets */
@@ -50,41 +43,61 @@ int main(int argc, char *argv[]) {
 
     /** Additional vectors required for the computation */
     double *cgup, *oc, *cnorm;
-
+ 
+    char file_out_cgup_vtk[255];
+    char file_out_su_vtk[255];
+    char file_out_var_vtk[255];
     char *file_in = argv[2]; // argv[1] or argv[2] ???
-    
+    char output_name[255];
+    char *file_out = output_name;
     /* Write File for PAPI counter values */
+    /* not sure if required */
     char filename[255];
+    
+    /* Check whether right number of arguments have been passed */
+    if( argc < 4) {
+        printf( "Need 4 arguments\nUse : %s <format> <input file> <output prefix> \n", argv[0]);
+        return EXIT_FAILURE ;
+    }
+    /* Check whether input is only text or binary */ 
+    if( strcmp( argv[1], "text" ) != 0 && strcmp( argv[1], "bin" ) != 0 ) {
+        printf( "<format> must be 'text' or 'bin' only\n" );
+        return EXIT_FAILURE;
+    } 
+    
     strcpy( filename, "pstats" );
     strcat( filename, ".dat" );
     FILE *open;
     open = fopen( filename, "w" );
     
     /* Write file for required output */ 
-    char output_name[255];
-    strcpy( output_name, argv[3] );
-    strcat( output_name, "." );
-    strcat( output_name, "txt" );
-    char *file_out = output_name;
 
-    char file_out_su_vtk[255];
+    strcpy( output_name, argv[3] );
+
     strcpy( file_out_su_vtk, argv[3] );
-    strcat( file_out_su_vtk, "_SU.vtk" );
-    char file_out_var_vtk[255];
+    strcat( file_out_su_vtk, ".SU.vtk" );
+
     strcpy( file_out_var_vtk, argv[3] );
-    strcat( file_out_var_vtk, "_VAR.vtk" );
-    char file_out_cgup_vtk[255];
+    strcat( file_out_var_vtk, ".VAR.vtk" );
+
     strcpy( file_out_cgup_vtk, argv[3] );
-    strcat( file_out_cgup_vtk, "_CGUP.vtk" );
+    strcat( file_out_cgup_vtk, ".CGUP.vtk" );
     
     /* Creating two event sets for PAPI */
 
  
     /********** START INITIALIZATION **********/
     // read-in the input file
-    int init_status = initialization(file_in, &nintci, &nintcf, &nextci, &nextcf, &lcc,
+    if( strcmp(argv[1], "text" )!= 0)
+        init_status = initialization(file_in, &nintci, &nintcf, &nextci, &nextcf, &lcc,
                                      &bs, &be, &bn, &bw, &bl, &bh, &bp, &su, &var, &cgup, &oc, 
                                      &cnorm);
+    else if (strcmp(argv[1], "bin") != 0)
+        init_status = initializationBin(file_in, &nintci, &nintcf, &nextci, &nextcf, &lcc,
+                                     &bs, &be, &bn, &bw, &bl, &bh, &bp, &su, &var, &cgup, &oc, 
+                                     &cnorm);
+    else
+        fprintf(stderr, "Failed to initialize data!\n");
 
     if ( init_status != 0 ) {
         fprintf(stderr, "Failed to initialize data!\n");
@@ -95,12 +108,13 @@ int main(int argc, char *argv[]) {
     /********** END INITIALIZATION **********/
 
     /********** START COMPUTATIONAL LOOP **********/
-    int total_iters = compute_solution(max_iters, nintci, nintcf, nextcf, lcc, bp, bs, bw, bl, bn,
-                                       be, bh, cnorm, var, su, cgup, &residual_ratio);
+ //   int total_iters = compute_solution(max_iters, nintci, nintcf, nextcf, lcc, bp, bs, bw, bl, bn,
+//                                       be, bh, cnorm, var, su, cgup, &residual_ratio);
     /********** END COMPUTATIONAL LOOP **********/
 
     /********** START FINALIZATION **********/
-    finalization(file_in, total_iters, residual_ratio, nintci, nintcf, var, cgup, su);
+  //  finalization(file_in, total_iters, residual_ratio, nintci, nintcf, var, cgup, su);
+    finalizationVTK(file_out, nintci, nintcf, lcc, var, cgup, su);
     /********** END FINALIZATION **********/
 
 
