@@ -88,11 +88,11 @@ int main(int argc, char *argv[]) {
  
     /********** START INITIALIZATION **********/
     // read-in the input file
-    if( strcmp(argv[1], "text" )!= 0)
+    if( strcmp(argv[1], "text" )== 0)
         init_status = initialization(file_in, &nintci, &nintcf, &nextci, &nextcf, &lcc,
                                      &bs, &be, &bn, &bw, &bl, &bh, &bp, &su, &var, &cgup, &oc, 
                                      &cnorm);
-    else if (strcmp(argv[1], "bin") != 0)
+    else if (strcmp(argv[1], "bin") == 0)
         init_status = initializationBin(file_in, &nintci, &nintcf, &nextci, &nextcf, &lcc,
                                      &bs, &be, &bn, &bw, &bl, &bh, &bp, &su, &var, &cgup, &oc, 
                                      &cnorm);
