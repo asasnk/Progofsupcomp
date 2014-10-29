@@ -30,4 +30,4 @@ $(LIBPOS) : $(OBJS)
 	$(AR) $(ARFLAGS) $@ $+
 
 clean:
-	rm -rf *.o gccg binconv $(LIBPOS)
+	rm -rf *.o gccg $(LIBPOS)

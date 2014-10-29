@@ -14,10 +14,6 @@
 #include "compute_solution.h"
 #include "finalization.h"
 
-#define NUMEVENT0 4
-#define NUMEVENT1 1
-
-// call error code here
 int main(int argc, char *argv[]) {
     /* Check whether right number of arguments have been passed */
     if( argc < 4) {
@@ -76,8 +72,6 @@ int main(int argc, char *argv[]) {
     char file_out_cgup_vtk[255];
     strcpy( file_out_cgup_vtk, argv[3] );
     strcat( file_out_cgup_vtk, "_CGUP.vtk" );
-    
-    /* Creating two event sets for PAPI */
 
  
     /********** START INITIALIZATION **********/
