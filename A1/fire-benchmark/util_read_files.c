@@ -137,19 +137,23 @@ int read_binary(char *filename, int *nintci, int *nintcf, int *nextci,
     fread( nintcf, sizeof(int), 1, fp_bin );
     fread( nextci, sizeof(int), 1, fp_bin );
     fread( nextcf, sizeof(int), 1, fp_bin );
-    if( ( *lcc = ( int** ) malloc( 6 * sizeof( int* ) ) ) == NULL ) {
-        printf( "Malloc failed to allocate first dimension of lcc (6)" );
+    
+    //allocating lcc
+    if ((*lcc = (int**) malloc( ( (*nintcf) - (*nintci) + 1) * sizeof(int*) )) == NULL)
+    {
+        printf("malloc failed to allocate first dimension of lcc (nintcf)");
         return -1;
     }
-
-
-    for( i = 0; i < 6; i++ ){
-        if( ( ( *lcc )[i] = ( int * ) malloc( ( *nintcf + 1 ) * sizeof( int ) ) ) == NULL ) {
-            printf( "Malloc(lcc) failed \n" );
+    for (i = (*nintci); i <= (*nintcf); i++)
+    {
+        if (((*lcc)[i] = (int *) malloc( 6 * sizeof(int) )) == NULL)
+        {
+            printf("malloc(lcc) failed\n");
             return -1;
         }
     }
-
+    
+    //start reading lcc 
     for( i = ( *nintci ); i <= *nintcf; i++ ) {
         fread( &( *lcc )[0][i], sizeof( int ), 1, fp_bin );
         fread( &( *lcc )[1][i], sizeof( int ), 1, fp_bin );
@@ -158,7 +162,8 @@ int read_binary(char *filename, int *nintci, int *nintcf, int *nextci,
         fread( &( *lcc )[4][i], sizeof( int ), 1, fp_bin );
         fread( &( *lcc )[5][i], sizeof( int ), 1, fp_bin );
     }
-
+    
+    // allocate other arrays
     if( ( *bs = (double *) malloc((*nextcf + 1) * sizeof(double))) == NULL ) {
         printf("Malloc() failed \n");
         return -1;
@@ -199,6 +204,7 @@ int read_binary(char *filename, int *nintci, int *nintcf, int *nextci,
         return -1;
     }
 
+    // read the other arrays
     for( i = ( *nintci ); i <= *nintcf; i++ ) {
         fread( &( ( *bs )[i] ), sizeof( double ), 1, fp_bin );
         fread( &( ( *be )[i] ), sizeof( double ), 1, fp_bin );
